@@ -1,0 +1,32 @@
+<resources>
+
+    <string name="app_name">dafeng_serial_debug</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_serial_debug">SerialDebug</string>
+    <string name="hex_display">十六进制显示</string>
+    <string name="msec">毫秒</string>
+    <string name="send">发送</string>
+    <string name="send_stop">停止发送</string>
+    <string name="send_not_empty">发送不能为空</string>
+    <string name="send_msg_is_not_hex_format_data">发送字符不是十六进制数据</string>
+    <string name="num_1000">1000</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <!-- speical -->
+    <string name="serial_config">串口配置</string>
+    <string name="serial_num">串口号</string>
+    <string name="baud_rate">波特率</string>
+    <string name="open">打开</string>
+    <string name="receive_config">接收配置 </string>
+    <string name="receive_newline">接收换行</string>
+    <string name="receive_pause">接收暂停</string>
+    <string name="send_config">发送配置</string>
+    <string name="send_loop">循环发送</string>
+    <string name="send_duration">发送间隔</string>
+    <string name="send_by_hex">十六进制发送</string>
+    <string name="clear_dis">清空显示</string>
+    <!-- TIP -->
+    <string name="serial_not_opened">串口未打开</string>
+
+</resources>
