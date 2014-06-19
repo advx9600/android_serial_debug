@@ -172,8 +172,6 @@ static int readData(JNIEnv* env, jobject obj, int fd_read, jbyteArray bts,
 	int ret = 0;
 	char* bt = (char*) env->GetByteArrayElements(bts, 0);
 	int size = env->GetArrayLength(bts);
-	char buf[size];
-	bzero(buf, size);
 #if 0
 	if (!pollRead(fd_read, timeOut)) {
 		env->ReleaseByteArrayElements(bts, (jbyte*) bt, 0);
@@ -181,13 +179,13 @@ static int readData(JNIEnv* env, jobject obj, int fd_read, jbyteArray bts,
 	}
 #endif
 //	LOGI("read data size:%d", leng > size ? size : leng);
-	ret = read(fd_read, buf, leng > size ? size : leng);
+	ret = read(fd_read, bt, leng > size ? size : leng);
 	if (ret < 0) {
 		LOGE("read failed!");
 	} else if (ret == 0) {
 		LOGI("read zero data,serial config err");
 	}
-	memcpy(bt, buf, ret);
+
 	env->ReleaseByteArrayElements(bts, (jbyte*) bt, 0);
 	return ret;
 }

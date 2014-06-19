@@ -1,62 +1,44 @@
 package com.df.serial.dafeng_serial_debug;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SerialParam {
-	private static final String[] serialContain = { "serial", "ttySAC" };
+	private static final String[] serialContain = { "serial", "ttySAC","ttyMAX" };
 
 	public static String[] Get_Serial_Names() {
 		File file = new File("/dev/");
 		String[] fileNames = file.list();
-		for (int num = 0; num < serialContain.length; ++num) {
-			int size = 0;
-			for (int i = 0; i < fileNames.length; ++i) {
-				if (fileNames[i].contains(serialContain[num])) {
-					size++;
+		List<Integer> listNum = new ArrayList<Integer>();
+		for (int i=0;i<fileNames.length;i++){
+			for (int j=0;j<serialContain.length;j++){
+				if (fileNames[i].contains(serialContain[j])){					
+					listNum.add(i);
+					break;
 				}
 			}
-			if (size == 0) {
-				continue;
-			}
-			String[] names = new String[size];
-			size = 0;
-			for (int i = 0; i < fileNames.length; ++i) {
-				if (fileNames[i].contains(serialContain[num])) {
-					names[size++] = fileNames[i].substring(fileNames[i]
-							.indexOf(serialContain[num]));
-				}
-			}
-			return names;
 		}
-
-		return null;
+		
+		if (listNum.size() <1)
+			return null;
+		
+		String[] names = new String[listNum.size()];
+		for (int i=0;i<listNum.size();i++)
+			names[i]=fileNames[listNum.get(i)];
+		
+		return names;
 	}
 
 	public static String[] Get_Serial_Values() {
-		File file = new File("/dev/");
-		String[] fileNames = file.list();
-
-		for (int num = 0; num < serialContain.length; ++num) {
-			int size = 0;
-			for (int i = 0; i < fileNames.length; ++i) {
-				if (fileNames[i].contains(serialContain[num])) {
-					size++;
-				}
-			}
-			if (size == 0) {
-				continue;
-			}
-			String[] values = new String[size];
-			size = 0;
-			for (int i = 0; i < fileNames.length; ++i) {
-				if (fileNames[i].contains(serialContain[num])) {
-					values[size++] = "/dev/" + fileNames[i];
-				}
-			}
-			return values;
+		String[] values =Get_Serial_Names();
+		
+		if (values ==null) return null;
+		
+		for (int i=0;i<values.length;i++){
+			values[i]="/dev/"+values[i];
 		}
-
-		return null;
+		return values;
 	}
 
 	public static final String Serial_BaudRate_Name[] = { "115200", "9600" };
