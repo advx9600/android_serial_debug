@@ -4,8 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Environment;
+
 public class SerialParam {
 	private static final String[] serialContain = { "serial", "ttySAC","ttyMAX" };
+	
+	public static final String SAVE_FILE_NAME= Environment.getExternalStorageDirectory()+"/dafeng_serila_recv.txt";
 
 	public static String[] Get_Serial_Names() {
 		File file = new File("/dev/");

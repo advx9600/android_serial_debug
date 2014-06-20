@@ -1,8 +1,13 @@
 package com.df.serial.dafeng_serial_debug;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.example.dafeng_serial_debug.R;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,6 +21,7 @@ public class SerialConfig {
 	private RecvThread mRecvThread;
 	private SendLoopThread mSendLoopThread;
 	private boolean mIsDestroyed = false;
+	private FileOps mFileOps = new FileOps();
 
 	private String serialVlaue;
 	private String serialBaudRate;
@@ -24,6 +30,7 @@ public class SerialConfig {
 	private boolean receiveHexDisplay;
 	private boolean sendHexFormat;
 	private boolean sendLoop;
+	private boolean saveFile = false;
 	private int sendLoopTime = 1000; // default value
 	private String sendMsg;
 
@@ -178,6 +185,7 @@ public class SerialConfig {
 	public void onDestroy() {
 		mIsDestroyed = true;
 		mSerialController.close();
+		mFileOps.close();
 	}
 
 	public String getSerialVlaue() {
@@ -230,6 +238,23 @@ public class SerialConfig {
 
 	public boolean isSendLoop() {
 		return sendLoop;
+	}
+
+	public void setSaveFile(boolean isSave) {
+		if (isSave) {
+			if (!mFileOps.open(SerialParam.SAVE_FILE_NAME)){
+				mSerialDebug.toast("open "+SerialParam.SAVE_FILE_NAME+" failed");
+			}else{
+				mSerialDebug.toast("save file "+SerialParam.SAVE_FILE_NAME);
+			}
+		} else {
+			mFileOps.close();
+		}
+		saveFile = isSave;
+	}
+
+	public boolean isSaveFile() {
+		return saveFile;
 	}
 
 	public void setSendLoop(boolean sendLoop) {
@@ -349,6 +374,56 @@ public class SerialConfig {
 		if (this.isReceiveNewLine()) {
 			disStr += "\n";
 		}
+
+		if (isSaveFile()) {
+			mFileOps.write(disStr);
+		}
 		mSerialDebug.appendRecvMsgDisplay(disStr);
+	}
+
+	class FileOps {
+		File file = null;
+		FileOutputStream out;
+
+		public boolean open(String fileName) {
+			file = new File(fileName);
+			try {
+				if (file.exists()) {
+					file.delete();
+				}
+				file.createNewFile();
+				out = new FileOutputStream(file, true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				file = null;
+				return false;
+			}
+			return true;
+		}
+
+		public void close() {
+			if (file != null) {
+				try {
+					out.close();
+					file=null;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
+		}
+
+		public int write(String msg) {
+			if (file != null) {
+				try {
+					out.write(msg.getBytes());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return msg.getBytes().length;
+			}
+			return 0;
+		}
 	}
 }

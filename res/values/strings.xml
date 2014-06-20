@@ -13,6 +13,7 @@
     <string name="num_1000">1000</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
+    <string name="save_file">保存文件</string>
     <!-- speical -->
     <string name="serial_config">串口配置</string>
     <string name="serial_num">串口号</string>

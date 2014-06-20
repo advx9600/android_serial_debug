@@ -18,6 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SerialDebug extends Activity implements OnCheckedChangeListener,
 		OnClickListener, OnItemSelectedListener {
@@ -28,6 +29,7 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 	private CheckBox mCheckRecvHexDis;
 	private CheckBox mCheckSendHexFormat;
 	private CheckBox mCheckSendLoop;
+	private CheckBox mCheckSaveFile;
 	private EditText mTextSendTime;
 	private ScrollView mScrollRecvTextDis;
 	private TextView mTextRecvMsgDis;
@@ -173,12 +175,6 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 		}
 	};
 
-	class MemStaticThread extends Thread {
-		@Override
-		public void run() {
-
-		}
-	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -209,6 +205,7 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 		/** serial send config ui ***/
 		mCheckSendHexFormat = (CheckBox) findViewById(R.id.check_send_hex_format);
 		mCheckSendLoop = (CheckBox) findViewById(R.id.check_send_loop);
+		mCheckSaveFile = (CheckBox) findViewById(R.id.check_save_file);
 		mTextSendTime = (EditText) findViewById(R.id.text_send_loop_time);
 		/** right layout ui ***/
 		mScrollRecvTextDis = (ScrollView) findViewById(R.id.scroll_recv_text_dis);
@@ -238,10 +235,11 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 		/** send **/
 		mCheckSendHexFormat.setOnCheckedChangeListener(this);
 		mCheckSendLoop.setOnCheckedChangeListener(this);
+		mCheckSaveFile.setOnCheckedChangeListener(this);
 
 		mBtnClearDis.setOnClickListener(this);
 		mBtnSend.setOnClickListener(this);
-		
+
 		setCurData();
 	}
 
@@ -273,6 +271,9 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 		// mTextSendMsg.requestFocus();
 	}
 
+	public void toast(String msg){
+		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+	}
 	public void appendRecvMsgDisplay(String msg) {
 		if (mTextRecvMsgDis.getHeight() > mScrollRecvTextDis.getHeight()) {
 			mTextRecvMsgDis.setText("");
@@ -315,7 +316,7 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -331,9 +332,11 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 			mSerialConfig.setSendHexFormat(isChecked);
 		} else if (buttonView == mCheckSendLoop) {
 			mSerialConfig.setSendLoop(isChecked);
+		} else if (buttonView == mCheckSaveFile) {
+			mSerialConfig.setSaveFile(isChecked);
 		}
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -345,5 +348,5 @@ public class SerialDebug extends Activity implements OnCheckedChangeListener,
 			mSerialConfig.setSendMsg(mTextSendMsg.getText().toString());
 		}
 	}
-	
+
 }
