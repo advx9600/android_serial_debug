@@ -2,15 +2,13 @@ package com.df.serial.dafeng_serial_debug;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.example.dafeng_serial_debug.R;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public class SerialConfig {
 	private SerialDebug mSerialDebug;
@@ -29,6 +27,7 @@ public class SerialConfig {
 	private int sendLoopTime = 1000; // default value
 	private String sendMsg;
 
+	@SuppressLint("HandlerLeak")
 	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

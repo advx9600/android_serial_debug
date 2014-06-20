@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -20,7 +19,8 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class SerialDebug extends Activity {
+public class SerialDebug extends Activity implements OnCheckedChangeListener,
+		OnClickListener, OnItemSelectedListener {
 	private CustomSpinner mSpinnerSerialNum;
 	private CustomSpinner mSpinnerSerialBaudRate;
 	private CheckBox mCheckSwitcher;
@@ -54,8 +54,7 @@ public class SerialDebug extends Activity {
 		private static final String KEY_SEND_LOOP_TIME = "send_loop_time";
 		private static final String KEY_SND_MSG = "send_msg";
 
-		public static final int MODE = Activity.MODE_WORLD_READABLE
-				+ Activity.MODE_WORLD_WRITEABLE;
+		public static final int MODE = Activity.MODE_PRIVATE;
 		private SharedPreferences mSettings;
 		private SharedPreferences.Editor mEditor;
 
@@ -230,93 +229,19 @@ public class SerialDebug extends Activity {
 		mSpinnerSerialBaudRate.ConstructSpinner(
 				SerialParam.Serial_BaudRate_Name,
 				SerialParam.Serial_BaudRate_Value);
-		mSpinnerSerialNum
-				.setOnItemSelectedListener(new OnItemSelectedListener() {
+		mSpinnerSerialNum.setOnItemSelectedListener(this);
+		mSpinnerSerialBaudRate.setOnItemSelectedListener(this);
 
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int pos, long arg3) {
-						// TODO Auto-generated method stub
-						mSerialConfig.setSerialVlaue(mSpinnerSerialNum
-								.getSelectedValue());
-					}
-
-					public void onNothingSelected(AdapterView<?> arg0) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-		mSpinnerSerialBaudRate
-				.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int arg2, long arg3) {
-						// TODO Auto-generated method stub
-						mSerialConfig.setSerialBaudRate(mSpinnerSerialBaudRate
-								.getSelectedValue());
-					}
-
-					public void onNothingSelected(AdapterView<?> arg0) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-		mCheckSwitcher
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-					public void onCheckedChanged(CompoundButton arg0, boolean bl) {
-						// TODO Auto-generated method stub
-						mSerialConfig.setSerialSwitch(bl);
-					}
-				});
-		mCheckRecvNewLine
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-					public void onCheckedChanged(CompoundButton arg0, boolean bl) {
-						// TODO Auto-generated method stub
-						mSerialConfig.setReceiveNewLine(bl);
-					}
-				});
-		mCheckRecvHexDis
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-					public void onCheckedChanged(CompoundButton arg0, boolean bl) {
-						// TODO Auto-generated method stub
-						mSerialConfig.setReceiveHexDisplay(bl);
-					}
-				});
+		mCheckSwitcher.setOnCheckedChangeListener(this);
+		mCheckRecvNewLine.setOnCheckedChangeListener(this);
+		mCheckRecvHexDis.setOnCheckedChangeListener(this);
 		/** send **/
-		mCheckSendHexFormat
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		mCheckSendHexFormat.setOnCheckedChangeListener(this);
+		mCheckSendLoop.setOnCheckedChangeListener(this);
 
-					public void onCheckedChanged(CompoundButton arg0, boolean bl) {
-						// TODO Auto-generated method stub
-						mSerialConfig.setSendHexFormat(bl);
-					}
-				});
-		mCheckSendLoop
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-					public void onCheckedChanged(CompoundButton arg0, boolean bl) {
-						// TODO Auto-generated method stub
-						mSerialConfig.setSendLoop(bl);
-					}
-				});
-		mBtnClearDis.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				mTextRecvMsgDis.setText("");
-			}
-		});
-		mBtnSend.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View view) {
-				// TODO Auto-generated method stub
-				mSerialConfig.setSendLoopTime(Integer.parseInt(mTextSendTime
-						.getText().toString()));
-				mSerialConfig.setSendMsg(mTextSendMsg.getText().toString());
-			}
-		});
+		mBtnClearDis.setOnClickListener(this);
+		mBtnSend.setOnClickListener(this);
+		
 		setCurData();
 	}
 
@@ -374,4 +299,51 @@ public class SerialDebug extends Activity {
 		return mCheckSendHexFormat.isEnabled() || mCheckSendLoop.isEnabled()
 				|| mTextSendTime.isEnabled() || mTextSendMsg.isEnabled();
 	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		if (parent == mSpinnerSerialNum) {
+			mSerialConfig.setSerialVlaue(mSpinnerSerialNum.getSelectedValue());
+		} else if (parent == mSpinnerSerialBaudRate) {
+			mSerialConfig.setSerialBaudRate(mSpinnerSerialBaudRate
+					.getSelectedValue());
+		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		// TODO Auto-generated method stub
+		if (buttonView == mCheckSwitcher) {
+			mSerialConfig.setSerialSwitch(isChecked);
+		} else if (buttonView == mCheckRecvNewLine) {
+			mSerialConfig.setReceiveNewLine(isChecked);
+		} else if (buttonView == mCheckRecvHexDis) {
+			mSerialConfig.setReceiveHexDisplay(isChecked);
+		} else if (buttonView == mCheckSendHexFormat) {
+			mSerialConfig.setSendHexFormat(isChecked);
+		} else if (buttonView == mCheckSendLoop) {
+			mSerialConfig.setSendLoop(isChecked);
+		}
+	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v == mBtnClearDis) {
+			mTextRecvMsgDis.setText("");
+		} else if (v == mBtnSend) {
+			mSerialConfig.setSendLoopTime(Integer.parseInt(mTextSendTime
+					.getText().toString()));
+			mSerialConfig.setSendMsg(mTextSendMsg.getText().toString());
+		}
+	}
+	
 }
